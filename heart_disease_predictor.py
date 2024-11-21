@@ -102,17 +102,24 @@ if st.button("Predict"):
     explainer = shap.Explainer(model)
     shap_values = explainer(input_data).values
 
+    # 检查 expected_value 的结构并调整
+    if isinstance(explainer.expected_value, (list, np.ndarray)):
+        baseline_value = explainer.expected_value[0]  # 多分类问题，取第一个类别的基线值
+    else:
+        baseline_value = explainer.expected_value  # 回归问题或其他单值问题
+
     # 生成 SHAP 力图并保存
     timestamp = int(time.time())
     plot_filename = f"shap_force_plot_{timestamp}.png"
     shap.force_plot(
-        explainer.expected_value[0],
-        shap_values[0],
+        baseline_value,
+        shap_values[0],  # 对第一个样本生成 SHAP 力图
         input_data
     ).savefig(plot_filename, bbox_inches='tight', dpi=300)
 
     # 显示 SHAP 力图
     st.image(plot_filename)
+
 
 
 # 运行Streamlit命令生成网页应用
