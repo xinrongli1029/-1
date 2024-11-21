@@ -109,7 +109,6 @@ if st.button("Predict"):
         baseline_value = explainer.expected_value  # 回归问题或其他单值问题
 
     # 生成 SHAP 力图
-    shap.initjs()
     plt.figure()
     shap.force_plot(
         baseline_value,
@@ -117,11 +116,12 @@ if st.button("Predict"):
         input_data.iloc[0, :],  # 只显示第一个样本
         matplotlib=True
     )
-    plt.savefig("shap_force_plot.png", bbox_inches="tight", dpi=300)
+    plot_filename = f"shap_force_plot_{int(time.time())}.png"
+    plt.savefig(plot_filename, bbox_inches="tight", dpi=300)
     plt.close()
 
     # 显示 SHAP 力图
-    st.image("shap_force_plot.png")
+    st.image(plot_filename)
 
 
 
